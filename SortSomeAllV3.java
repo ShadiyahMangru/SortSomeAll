@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.function.*;
 import java.io.*;
+import java.text.*;
 
 class HockeyPlayer extends FilterData {
 	//fields
@@ -253,11 +254,11 @@ class Goalie extends HockeyPlayer implements Comparable<Goalie>{
 	
 	@Override
     	public int compareTo(Goalie other) {
-    	if(goalieStatsIndex <=3){	
-			if ((Integer)this.getStatsList().get(goalieStatsIndex + 1) < (Integer)other.getStatsList().get(goalieStatsIndex + 1)) {
+    	if(goalieStatsIndex < StatsTracking.numGIntStats){	
+			if ((Integer)this.getStatsList().get(goalieStatsIndex+1) < (Integer)other.getStatsList().get(goalieStatsIndex+1)) {
 				return -1;
 			}
-			else if ((Integer)this.getStatsList().get(goalieStatsIndex + 1) == (Integer)other.getStatsList().get(goalieStatsIndex + 1)) { 
+			else if ((Integer)this.getStatsList().get(goalieStatsIndex+1) == (Integer)other.getStatsList().get(goalieStatsIndex+1)) { 
 				return 0;
 			}
 			else{
@@ -265,10 +266,10 @@ class Goalie extends HockeyPlayer implements Comparable<Goalie>{
 			}
 		}
 		else{
-			if ((Double)this.getStatsList().get(goalieStatsIndex + 1) < (Double)other.getStatsList().get(goalieStatsIndex + 1)) {
+			if ((Double)this.getStatsList().get(goalieStatsIndex+1) < (Double)other.getStatsList().get(goalieStatsIndex+1)) {
 				return -1;
 			}
-			else if ((Double)this.getStatsList().get(goalieStatsIndex + 1) == (Double)other.getStatsList().get(goalieStatsIndex + 1)) { 
+			else if ((Double)this.getStatsList().get(goalieStatsIndex+1) == (Double)other.getStatsList().get(goalieStatsIndex+1)) { 
 				return 0;
 			}
 			else{
@@ -316,12 +317,13 @@ class Goalie extends HockeyPlayer implements Comparable<Goalie>{
 	}
 	
 	public void printIndivStats(String [] statType, int indexIntEnds, Goalie p){
+		DecimalFormat df = new DecimalFormat("0.0000");
 		for(int i = 0; i< statType.length; i++){
 			if(i<indexIntEnds){	
 				System.out.println("\t\t" + statType[i] + ": " + (Integer)p.getStatsList().get(i+1));
 			}
 			else{
-				System.out.println("\t\t" + statType[i] + ": " + (Double)p.getStatsList().get(i+1));
+				System.out.println("\t\t" + statType[i] + ": " + df.format((Double)p.getStatsList().get(i+1)));
 			}
 		}
 	}
@@ -416,11 +418,11 @@ class SkaterStats{
 	
 	public void setAvgPtsGP(){
 		try{
-			if(gamesPlayed > 0){
+			if(gamesPlayed > 0.0){
 				avgPtsGP = (double)points/(double)gamesPlayed;	
 			}
 			else{
-				avgPtsGP = 0;	
+				avgPtsGP = 0.0;	
 			}
 			
 		}
@@ -495,11 +497,11 @@ class Skater extends HockeyPlayer implements Comparable<Skater>{
 	
 	@Override
     	public int compareTo(Skater other) {
-    		if(skaterStatsIndex <=4){	
-			if ((Integer)this.getStatsList().get(skaterStatsIndex + 1) < (Integer)other.getStatsList().get(skaterStatsIndex + 1)) {
+    		if(skaterStatsIndex < StatsTracking.numSIntStats){	
+			if ((Integer)this.getStatsList().get(skaterStatsIndex+1) < (Integer)other.getStatsList().get(skaterStatsIndex+1)) {
 				return -1;
 			}
-			else if ((Integer)this.getStatsList().get(skaterStatsIndex + 1) == (Integer)other.getStatsList().get(skaterStatsIndex + 1)) { 
+			else if ((Integer)this.getStatsList().get(skaterStatsIndex+1) == (Integer)other.getStatsList().get(skaterStatsIndex+1)) { 
 				return 0;
 			}
 			else{
@@ -507,10 +509,10 @@ class Skater extends HockeyPlayer implements Comparable<Skater>{
 			}
 		}
 		else{
-			if ((Double)this.getStatsList().get(skaterStatsIndex + 1) < (Double)other.getStatsList().get(skaterStatsIndex + 1)) {
+			if ((Double)this.getStatsList().get(skaterStatsIndex+1) < (Double)other.getStatsList().get(skaterStatsIndex+1)) {
 				return -1;
 			}
-			else if ((Double)this.getStatsList().get(skaterStatsIndex + 1) == (Double)other.getStatsList().get(skaterStatsIndex + 1)) { 
+			else if ((Double)this.getStatsList().get(skaterStatsIndex+1) == (Double)other.getStatsList().get(skaterStatsIndex+1)) { 
 				return 0;
 			}
 			else{
@@ -559,12 +561,13 @@ class Skater extends HockeyPlayer implements Comparable<Skater>{
 	}
 	
 	public void printIndivStats(String [] statType, int indexIntEnds, Skater p){
+		DecimalFormat df = new DecimalFormat("0.0000");
 		for(int i = 0; i< statType.length; i++){
 			if(i<indexIntEnds){	
 				System.out.println("\t\t" + statType[i] + ": " + (Integer)p.getStatsList().get(i+1));
 			}
 			else{
-				System.out.println("\t\t" + statType[i] + ": " + (Double)p.getStatsList().get(i+1));
+				System.out.println("\t\t" + statType[i] + ": " + df.format((Double)p.getStatsList().get(i+1)));
 			}
 		}
 	}
@@ -1035,19 +1038,20 @@ abstract class FilterData{
 	}
 	
 	public static void seasonStats(ArrayList<HockeyPlayer> seasonRoster, String[] playersArray, String timePeriod, int choice){
+		DecimalFormat df = new DecimalFormat("0.0000");
 		Roster r = new Roster(seasonRoster);
 		if(r.isInRoster(playersArray[choice-1], seasonRoster) == true){
 			HockeyPlayer p = FilterData.playerSelection(r.getRoster(), h -> h.isLastName(playersArray[choice-1]));
 			if(p.getPosition().equals("Goalie")){
 				Goalie g = (Goalie)p;
 				System.out.println("\t\t" + timePeriod + ": Games Played: " + g.getStats().getGamesPlayed() + "\tWins: " + g.getStats().getWins() + "\tShots Against: " + g.getStats().getShotsAgainst() + "\tGoals Against: " + g.getStats().getGoalsAgainst() + 
-				"\tSaves: " + g.getStats().getSaves() + "\tSave %: " + g.getStats().getSavePercentage() + "\tAvg Wins/GP: " + g.getStats().getAvgWinsGP());
+				"\tSaves: " + g.getStats().getSaves() + "\tSave %: " + df.format(g.getStats().getSavePercentage()) + "\tAvg Wins/GP: " + df.format(g.getStats().getAvgWinsGP()));
 			}
 			else{
 				Skater s = (Skater)p;
 				System.out.println("\t\t" + timePeriod + ": Games Played: " + s.getStats().getGamesPlayed() + "\tGoals: " + s.getStats().getGoals() + "\tAssists: " + s.getStats().getAssists() +
-				"\tPts: " + s.getStats().getPoints() + "\t+/-: " + s.getStats().getPlusMinus() + "\tShots: " + s.getStats().getShots() + "\tShooting %: " + s.getStats().getShootingPercentage() +
-				"\tAvg Pts/GP: " + s.getStats().getAvgPtsGP());
+				"\tPts: " + s.getStats().getPoints() + "\t+/-: " + s.getStats().getPlusMinus() + "\tShots: " + s.getStats().getShots() + "\tShooting %: " + df.format(s.getStats().getShootingPercentage()) +
+				"\tAvg Pts/GP: " + df.format(s.getStats().getAvgPtsGP()));
 			}
 		}
 	}
@@ -1199,11 +1203,11 @@ class Output implements StatsTracking{
 			System.out.println("\n\t*** 2017 - 2018 Regular Season Stats ***");
 			if(sel.getPosition().equals("Goalie")){
 				Goalie p = (Goalie)sel;
-				p.printIndivStats(StatsTracking.goalieStats, 4, p);
+				p.printIndivStats(StatsTracking.goalieStats, StatsTracking.numGIntStats, p);
 			}
 			else{
 				Skater p = (Skater)sel;
-				p.printIndivStats(StatsTracking.skaterStats, 5, p);
+				p.printIndivStats(StatsTracking.skaterStats, StatsTracking.numSIntStats, p);
 			}
 			System.out.println("\n\t*** WSH Career Stats ***");
 			FilterData.seasonStats(RosterData.roster2017(), playersArray, "2017 - 2018 Regular Season", choice);
@@ -1262,18 +1266,20 @@ class Output implements StatsTracking{
 	}
 	
 			public void getLowHighFiveDouble(double minVal, String statType, ArrayList<Skater> skaterStat, int statSorting, boolean isHighest){
+				DecimalFormat df = new DecimalFormat("0.0000");
 				ArrayList<Double>lowHighFive = new ArrayList<Double>();
 				if(isHighest == true){
 					Collections.reverse(skaterStat);	
 				}
 				lowHighFive.add(minVal);
 					for(Skater sk : skaterStat){
-						if(lowHighFive.contains((Double)sk.getStatsList().get(statSorting)) != true & lowHighFive.size() <= 4){
+						if(lowHighFive.contains((Double)sk.getStatsList().get(statSorting)) != true & lowHighFive.size() < StatsTracking.numSIntStats){
 							lowHighFive.add((Double)sk.getStatsList().get(statSorting));
 						}
 					}
+				System.out.println(statType.toUpperCase() + ": ");
 				for(int i = 0; i< lowHighFive.size(); i++){
-					System.out.print(lowHighFive.get(i) + " " + statType +":  ");
+					System.out.print(df.format(lowHighFive.get(i)) + ":  \t");
 						for(Skater sk : skaterStat){
 							if(((Double)sk.getStatsList().get(statSorting)).equals(lowHighFive.get(i)) == true){
 								System.out.print(sk.getLastName() + ", ");	
@@ -1290,12 +1296,13 @@ class Output implements StatsTracking{
 				}
 				lowHighFive.add(minVal); 
 				for(Skater sk : skaterStat){
-					if(lowHighFive.contains((Integer)sk.getStatsList().get(statSorting)) != true & lowHighFive.size() <= 4){
+					if(lowHighFive.contains((Integer)sk.getStatsList().get(statSorting)) != true & lowHighFive.size() < StatsTracking.numSIntStats){
 						lowHighFive.add((Integer)sk.getStatsList().get(statSorting));
 					}
 				}
+				System.out.println(statType.toUpperCase() + ": ");
 				for(int i = 0; i< lowHighFive.size(); i++){
-					System.out.print(lowHighFive.get(i) + " " + statType +":  ");
+					System.out.print(lowHighFive.get(i) + ":  \t");
 						for(Skater sk : skaterStat){
 							if(((Integer)sk.getStatsList().get(statSorting)).equals(lowHighFive.get(i)) == true){
 								System.out.print(sk.getLastName() + ", ");	
@@ -1316,8 +1323,10 @@ class Output implements StatsTracking{
 			menuOptions(StatsTracking.sortSomeAllOpts, false);
 			int sortChoice = userChoice();
 			switch(sortChoice){
-			case 1: for(Skater sk : skaterStat)
-				System.out.println(sk + "'s " + StatsTracking.skaterStats[choice-1] + " : " + (Integer)sk.getStatsList().get(choice)); 
+			case 1: Collections.reverse(skaterStat); 
+				System.out.println(StatsTracking.skaterStats[choice-1].toUpperCase() + ": ");
+				for(Skater sk : skaterStat)
+				System.out.println((Integer)sk.getStatsList().get(choice) + ": \t" + sk); 
 				break;
 			case 2: getLowHighFiveInteger((Integer)skaterStat.get(0).getStatsList().get(choice), StatsTracking.skaterStats[choice-1], skaterStat, choice, false);
 				break;
@@ -1332,18 +1341,21 @@ class Output implements StatsTracking{
 		}
 			
 		public void sortSomeAllDouble(ArrayList<Object> sStat, int choice){
+			DecimalFormat df = new DecimalFormat("0.0000");
 			ArrayList<Skater> skaterStat = new ArrayList<Skater>();
 			for(Object o : sStat){
 				skaterStat.add((Skater)o);	
 			}
 			System.out.println("For " + getSeason() + " " + StatsTracking.skaterStats[choice-1]);
-			System.out.println("MAX = " + (Double)skaterStat.get(skaterStat.size()-1).getStatsList().get(choice));
-			System.out.println("MIN = " + (Double)skaterStat.get(0).getStatsList().get(choice));
+			System.out.println("MAX = " + df.format((Double)skaterStat.get(skaterStat.size()-1).getStatsList().get(choice)));
+			System.out.println("MIN = " + df.format((Double)skaterStat.get(0).getStatsList().get(choice)));
 			menuOptions(StatsTracking.sortSomeAllOpts, false);
 			int sortChoice = userChoice();
 			switch(sortChoice){
-			case 1: for(Skater sk : skaterStat)
-				System.out.println(sk + "'s " + StatsTracking.skaterStats[choice-1] + " : " + (Double)sk.getStatsList().get(choice)); 
+			case 1: Collections.reverse(skaterStat); 
+				System.out.println(StatsTracking.skaterStats[choice-1].toUpperCase() + ": ");
+				for(Skater sk : skaterStat)
+				System.out.println(df.format((Double)sk.getStatsList().get(choice)) + ": \t" + sk); 
 				break;
 			case 2: getLowHighFiveDouble((Double)skaterStat.get(0).getStatsList().get(choice), StatsTracking.skaterStats[choice-1], skaterStat, choice, false);
 				break;
@@ -1358,12 +1370,15 @@ class Output implements StatsTracking{
 		}	
 		
 		public void sortAll(ArrayList<Object> gStat, int choice){
+			DecimalFormat df = new DecimalFormat("0.0000");
 			ArrayList<Goalie> goalieStat = new ArrayList<Goalie>();
 			for(Object o : gStat){
 				goalieStat.add((Goalie)o);	
 			}
+			Collections.reverse(goalieStat);
+			//System.out.println(StatsTracking.goalieStats[choice-1].toUpperCase() + ": ");
 			for(Goalie g : goalieStat)
-				System.out.println(g + "'s " + StatsTracking.goalieStats[choice-1] + " : " + g.getStatsList().get(choice)); 
+				System.out.println(g + ": " + df.format(g.getStatsList().get(choice))); 
 		}
 		
 	public void playerStatsMenu(int numChoice, String playerType, String[] statsTrack, int numIntStats, boolean isGoalie){
